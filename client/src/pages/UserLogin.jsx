@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import userApi from "../services/userApi";
 
-const UserLogin = () => {
+const UserLogin = ({setAuth}) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [tokenInput, setTokenInput] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -16,15 +15,22 @@ const UserLogin = () => {
     setLoading(true);
 
     try {
-      // Attempt API login. Depending on your backend, this may require no auth middleware.
       const res = await userApi.post("/auth/login", { email, password });
-      const t = res.data.token;
-      if (t) {
-        localStorage.setItem("userToken", t);
+      const token = res.data.token;
+
+      
+        localStorage.setItem("userToken", token);
+
+        setAuth({
+  role: "user",
+  isLoggedIn: true,
+});
+
         navigate("/user/dashboard");
-      } else {
-        setError("Login succeeded but token not returned.");
-      }
+        return;
+      
+
+      setError("Login succeeded but token was not returned.");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     } finally {
@@ -32,22 +38,12 @@ const UserLogin = () => {
     }
   };
 
-  const handleUseToken = (e) => {
-    e.preventDefault();
-    if (!tokenInput) {
-      setError("Paste a token or use API login.");
-      return;
-    }
-    localStorage.setItem("userToken", tokenInput.trim());
-    navigate("/user/dashboard");
-  };
-
   return (
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <p className="eyebrow">User Access</p>
-          <h1>User Login</h1>
+          <p className="eyebrow">Welcome back</p>
+          <h1>Login to your account</h1>
         </div>
 
         <form onSubmit={handleApiLogin} className="auth-form">
@@ -55,30 +51,34 @@ const UserLogin = () => {
 
           <label>
             Email
-            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" type="email" />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              type="email"
+              required
+            />
           </label>
 
           <label>
             Password
-            <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password" type="password" />
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              type="password"
+              required
+            />
           </label>
 
           <button type="submit" className="primary-button" disabled={loading}>
-            {loading ? "Signing in..." : "Login via API"}
+            {loading ? "Signing in..." : "Login"}
           </button>
         </form>
 
-        <hr style={{ margin: "18px 0", borderColor: "rgba(148,163,184,0.08)" }} />
-
-        <form onSubmit={handleUseToken} className="auth-form">
-          <label>
-            Paste token (manual)
-            <input value={tokenInput} onChange={(e) => setTokenInput(e.target.value)} placeholder="paste token here" />
-          </label>
-
-          <button type="submit" className="secondary-button">Use Token</button>
-        </form>
-
+        <p className="auth-link">
+          Don&apos;t have an account? <Link to="/user/register">Create one</Link>
+        </p>
       </div>
     </div>
   );

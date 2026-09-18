@@ -115,13 +115,13 @@ const UserProfile = () => {
   return (
     <div className="user-profile">
 
-      <h2>My Profile</h2>
+        <h2>My Profile</h2>
 
-      {error && (
-        <p className="error-message">
-          {error}
-        </p>
-      )}
+        {error && (
+          <p className="error-message">
+            {error}
+          </p>
+        )}
 
       {message && (
         <p className="success-message">
@@ -129,9 +129,9 @@ const UserProfile = () => {
         </p>
       )}
 
-      {user && (
-        <>
-          <form onSubmit={handleUpdateProfile}>
+        {user && (
+          <>
+            <form onSubmit={handleUpdateProfile}>
 
             <div>
               <label>Name</label>
@@ -187,7 +187,7 @@ const UserProfile = () => {
             Delete Account
           </button>
         </>
-      )}
+        )}
 
     </div>
   );

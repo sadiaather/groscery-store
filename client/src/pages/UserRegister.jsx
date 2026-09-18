@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../services/api";
+import userApi from "../services/userApi";
 
-const AdminLogin = ({setAuth}) => {
+const UserRegister = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -14,19 +14,17 @@ const AdminLogin = ({setAuth}) => {
     setLoading(true);
 
     try {
-      const response = await api.post("/login", form);
+      const response = await userApi.post("/auth/signup", form);
 
-      localStorage.setItem("adminToken", response.data.token);
-      localStorage.setItem("admin", JSON.stringify(response.data.admin || {}));
+      if (response.data.token) {
+        localStorage.setItem("userToken", response.data.token);
+        navigate("/user/dashboard");
+        return;
+      }
 
-      setAuth({
-  role: "admin",
-  isLoggedIn: true,
-});
-
-      navigate("/admin/dashboard");
+      navigate("/user/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -36,12 +34,23 @@ const AdminLogin = ({setAuth}) => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <p className="eyebrow">Access</p>
-          <h1>Admin Login</h1>
+          <p className="eyebrow">Create account</p>
+          <h1>Register as a user</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <p className="alert error">{error}</p>}
+
+          <label>
+            Full name
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="John Smith"
+              required
+            />
+          </label>
 
           <label>
             Email
@@ -49,7 +58,7 @@ const AdminLogin = ({setAuth}) => {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="admin@example.com"
+              placeholder="you@example.com"
               required
             />
           </label>
@@ -60,22 +69,22 @@ const AdminLogin = ({setAuth}) => {
               type="password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="Enter your password"
+              placeholder="Create a password"
               required
             />
           </label>
 
           <button type="submit" disabled={loading} className="primary-button">
-            {loading ? "Signing in..." : "Login"}
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
         <p className="auth-link">
-          Need an account? <Link to="/admin/register">Create admin</Link>
+          Already have an account? <Link to="/user/login">Login</Link>
         </p>
       </div>
     </div>
   );
 };
 
-export default AdminLogin;
+export default UserRegister;

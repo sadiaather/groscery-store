@@ -1,40 +1,9 @@
-// import React from "react";
 
-// const AdminDashboard = () => {
-//   return (
-//     <div className="dashboard">
-//       <h1>Admin Dashboard</h1>
-
-//       <div className="stats-grid">
-//         <div className="stat-card">
-//           <h3>Total Users</h3>
-//           <p>120</p>
-//         </div>
-
-//         <div className="stat-card">
-//           <h3>Active Users</h3>
-//           <p>100</p>
-//         </div>
-
-//         <div className="stat-card">
-//           <h3>Blocked Users</h3>
-//           <p>20</p>
-//         </div>
-
-//         <div className="stat-card">
-//           <h3>Total Admins</h3>
-//           <p>2</p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AdminDashboard;
-
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import api from "../services/api";
+
+
 
 const emptyForm = { name: "", email: "", password: "" };
 
@@ -135,12 +104,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("admin");
-    navigate("/admin/login");
-  };
-
   if (loading) {
     return <div className="loading-screen">Loading dashboard...</div>;
   }
@@ -148,23 +111,18 @@ const AdminDashboard = () => {
   return (
     <div className="dashboard-shell">
       <aside className="sidebar">
-        <div>
-          <p className="eyebrow">Workspace</p>
-          <h2>Admin Panel</h2>
-        </div>
+          <div>
+            <p className="eyebrow">Workspace</p>
+            <h2>Admin Panel</h2>
+          </div>
 
-        <nav className="sidebar-nav">
-          <span className="nav-item active">Dashboard</span>
-          <span className="nav-item">Users</span>
-       
-        </nav>
+          <nav className="sidebar-nav">
+            <span className="nav-item active">Dashboard</span>
+            <span className="nav-item">Users</span>
+          </nav>
+        </aside>
 
-        <button type="button" onClick={handleLogout} className="logout-button">
-          Logout
-        </button>
-      </aside>
-
-      <main className="dashboard-content">
+        <main className="dashboard-content">
         <header className="topbar">
           <div>
             <p className="eyebrow">Overview</p>

@@ -32,6 +32,7 @@ try{
      const token = jwt.sign({
         userId : result._id},secret)
 
+        console.log(secret);
         
         
        return res.status(200).json({

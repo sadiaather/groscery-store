@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import Navbar from "./navbar";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("adminToken");
@@ -7,7 +8,12 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/admin/login" replace />;
   }
 
-  return children;
+  return (
+    <>
+    
+      {children}
+    </>
+  );
 };
 
 export default ProtectedRoute;

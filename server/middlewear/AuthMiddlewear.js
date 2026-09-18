@@ -14,7 +14,7 @@ export const authentication = (req,res,next)=>{
  try{
     const result = req.headers.authorization
       if(! result){
-      res.status(500).json({
+     return res.status(500).json({
         success:false,
         message : "plz login or signup"
       })
